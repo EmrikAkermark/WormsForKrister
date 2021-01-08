@@ -1,5 +1,7 @@
 ﻿public class Cell
 {
+	public int Xcoordinate, Ycoordinate;
+
 	public enum CellContent
 	{
 		Empty,
@@ -10,9 +12,11 @@
 
 	public CellContent WhatsHere = CellContent.Empty;
 
-	public Cell(CellContent cellContent)
+	public Cell(CellContent cellContent, int Xcoordinate, int Ycoordinate)
 	{
 		WhatsHere = cellContent;
+		this.Xcoordinate = Xcoordinate;
+		this.Ycoordinate = Ycoordinate;
 	}
 
 	public CellContent CheckCell()

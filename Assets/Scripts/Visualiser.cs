@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Visualiser : MonoBehaviour
@@ -7,7 +6,6 @@ public class Visualiser : MonoBehaviour
     public CellGrid RefGrid;
 	public GameObject Plane;
 	public Material[,] VisGrid;
-
 	public Color Snake, Wall, Food, Floor;
 
 	private int width, height;
@@ -23,30 +21,91 @@ public class Visualiser : MonoBehaviour
 		{
 			for (int y = 0; y < height; y++)
 			{
-				VisGrid[x, y] = Instantiate(Plane, new Vector3(x, y, 0), transform.rotation).GetComponent<Renderer>().material;
+				VisGrid[x, y] = Instantiate(Plane, new Vector3(x - width / 2 + 0.5f, y - height/ 2 + 0.5f, 0), transform.rotation).GetComponent<Renderer>().material;
 			}
 		}
 	}
 
-	public void FlashDead()
+	public void UpdateSnake(SnakeSegment snakeHead)
 	{
-		StartCoroutine(FlashDeadCoRoutine());
-	}
-
-
-	public IEnumerator FlashDeadCoRoutine()
-	{
-		foreach (var cell in VisGrid)
+		SnakeSegment snakePart = snakeHead;
+		int x = snakePart.GetXCoordinate();
+		int y = snakePart.GetYCoordinate();
+		VisGrid[x, y].color = Snake;
+		bool notOnLastSegment = true;
+		while (notOnLastSegment)
 		{
-			cell.color = Floor;
-			Debug.Log(cell.color);
+			if(snakePart.Next == null)
+			{
+				x = snakePart.PreviousCell.Xcoordinate;
+				y = snakePart.PreviousCell.Ycoordinate;
+				VisGrid[x, y].color = Floor;
+				notOnLastSegment = false;
+			}
+			else
+			{
+				snakePart = snakePart.Next;
+			}
 		}
-		yield return new WaitForSeconds(0.5f);
-		//Visualize();
-		//yield return new WaitForSeconds(0.5f);
 	}
 
-    public void Visualize()
+	public void HideSnake(SnakeSegment snakeHead)
+	{
+		SnakeSegment SnakePart = snakeHead;
+		bool stillOnSnake = true;
+		while (stillOnSnake)
+		{
+			int x = SnakePart.GetXCoordinate();
+			int y = SnakePart.GetYCoordinate();
+			VisGrid[x, y].color = Floor;
+			if(SnakePart.Next != null)
+			{
+				SnakePart = SnakePart.Next;
+			}
+			else
+			{
+				stillOnSnake = false;
+			}
+		}
+	}
+
+	public void ShowSnake(SnakeSegment snakeHead)
+	{
+		SnakeSegment SnakePart = snakeHead;
+		bool stillOnSnake = true;
+		while (stillOnSnake)
+		{
+			int x = SnakePart.GetXCoordinate();
+			int y = SnakePart.GetYCoordinate();
+			VisGrid[x, y].color = Snake;
+			if (SnakePart.Next != null)
+			{
+				SnakePart = SnakePart.Next;
+			}
+			else
+			{
+				stillOnSnake = false;
+			}
+		}
+	}
+
+	public void AddFood(int Xcoordinate, int Ycoordinate)
+	{
+		VisGrid[Xcoordinate, Ycoordinate].color = Food;
+	}
+
+	public IEnumerator FlashDead(SnakeSegment snakeHead)
+	{
+		while (true)
+		{
+			yield return new WaitForSeconds(0.5f);
+			HideSnake(snakeHead);
+			yield return new WaitForSeconds(0.5f);
+			ShowSnake(snakeHead);
+		}
+	}
+
+	public void Visualize()
 	{
 		//This is ugly
 		for (int x = 0; x < width; x++)

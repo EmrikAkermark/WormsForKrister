@@ -37,16 +37,16 @@ public class CellGrid
 			{
 				for (int y = 0; y < actualHeight; y++)
 				{
-					Cells[x, y] = new Cell(Cell.CellContent.Wall);
+					Cells[x, y] = new Cell(Cell.CellContent.Wall, x, y);
 				}
 			}
 			else
 			{
-				Cells[x, 0] = new Cell(Cell.CellContent.Wall);
-				Cells[x, actualHeight-1] = new Cell(Cell.CellContent.Wall);
+				Cells[x, 0] = new Cell(Cell.CellContent.Wall, x, 0);
+				Cells[x, actualHeight-1] = new Cell(Cell.CellContent.Wall, x, actualHeight);
 				for (int y = 1; y < actualHeight-1; y++)
 				{
-					Cells[x, y] = new Cell(Cell.CellContent.Empty);
+					Cells[x, y] = new Cell(Cell.CellContent.Empty, x, y);
 				}
 			}
 		}

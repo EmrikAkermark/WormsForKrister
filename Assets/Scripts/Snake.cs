@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections;
+
 
 public class Snake : MonoBehaviour
 {
@@ -8,9 +10,8 @@ public class Snake : MonoBehaviour
 	public float TickDelay = 1f, FoodDelay = 5f;
 	private float timeSnake, timeFood;
 
-	private Coroutine Dead;
-
 	private bool isAlive = true;
+	private Coroutine Dead;
 	public enum Directions
 	{
 		Left,
@@ -56,7 +57,7 @@ public class Snake : MonoBehaviour
 		{
 			timeSnake -= TickDelay;
 			MoveToNewCell();
-			Vis.Visualize();
+			Vis.UpdateSnake(body.Head);
 		}
 		timeFood += Time.deltaTime;
 		if(timeFood > FoodDelay)
@@ -65,20 +66,24 @@ public class Snake : MonoBehaviour
 			bool foundSpot = false;
 			int width = grid.Cells.GetLength(0) - 1;
 			int height = grid.Cells.GetLength(1) - 1;
+			int x = 0;
+			int y = 0;
 			while (!foundSpot)
 			{
-				foundSpot = grid.Cells[Random.Range(1, width), Random.Range(1, height)].AddFood();
-				Vis.Visualize();
+				x = Random.Range(1, width);
+				y = Random.Range(1, height);
+				foundSpot = grid.Cells[x, y].AddFood();
 			}
+			Vis.AddFood(x, y);
 		}
 	}
 
-
-
-
 	public void NewGame()
 	{
-		
+		if(Dead != null)
+		{
+			StopCoroutine(Dead);
+		}
 		grid = new CellGrid(Width, Height);
 		int startX = Mathf.FloorToInt(Width / 2);
 		int startY = Mathf.FloorToInt(Height / 2);
@@ -151,8 +156,10 @@ public class Snake : MonoBehaviour
 				break;
 			default:
 				isAlive = false;
-				Vis.FlashDead();
+				Dead = StartCoroutine(Vis.FlashDead(body.Head));
 				break;
 		}
 	}
+
+	
 }

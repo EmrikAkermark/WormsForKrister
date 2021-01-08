@@ -24,6 +24,7 @@ public class SnakeSegment
 {
 	public SnakeSegment Next;
 	public Cell OccupiedCell;
+	public Cell PreviousCell;
 
     public SnakeSegment(Cell startingCell, SnakeSegment nextSegment)
 	{
@@ -37,6 +38,7 @@ public class SnakeSegment
 		if(Next == null)
 		{
 			OccupiedCell.SnakeGone();
+			PreviousCell = OccupiedCell;
 			OccupiedCell = newCell;
 			OccupiedCell.SnakeHere();
 		}
@@ -45,7 +47,7 @@ public class SnakeSegment
 			Cell oldCell = OccupiedCell;
 			OccupiedCell = newCell;
 			OccupiedCell.SnakeHere(); //Might be superfluous
-			Next.MoveToNextCell(oldCell);
+			Next.MoveToNewCell(oldCell);
 		}
 	}
 
@@ -62,6 +64,15 @@ public class SnakeSegment
 			OccupiedCell = newCell;
 			Next.MoveToNextCell(oldCell);
 		}
+	}
+
+	public int GetXCoordinate()
+	{
+		return OccupiedCell.Xcoordinate;
+	}
+	public int GetYCoordinate()
+	{
+		return OccupiedCell.Ycoordinate;
 	}
 
 }
