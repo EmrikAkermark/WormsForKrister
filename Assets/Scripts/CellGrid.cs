@@ -1,22 +1,56 @@
-﻿public class CellGrid
+﻿
+public class CellGrid
 {
-    public int Width, Height;
+    private int minimumWidth = 4, minimumHeight = 4;
+	public Cell[,] Cells;
 
-    public Cell[,] Grid;
+	public Cell GetGridCell(int x, int y)
+	{
+		return Cells[x, y];
+	}
 
-    private int minWidht = 4, minHeight = 4;
+    public CellGrid(int width, int height)
+	{
+		int actualWidth;
+		int actualHeight;
+		if(width < minimumWidth)
+		{
+			actualWidth = minimumWidth;
+		}
+		else
+		{
+			actualWidth = width;
+		}
+		if(height < minimumHeight)
+		{
+			actualHeight = minimumHeight;
+		}
+		else
+		{
+			actualHeight = height;
+		}
 
-    public CellGrid(int Width, int Height)
-    {
-        if(Width < minWidht)
-        {
-            Width = minWidht;
-        }
-        if(Height < minHeight)
-        {
-            Height = minHeight;
-        }
-        this.Width = Width;
-        this.Height = Height;
-    }
+		Cells = new Cell[actualWidth, actualHeight];
+		for (int x = 0; x < actualWidth; x++)
+		{
+			if (x == 0 || x == actualWidth-1)
+			{
+				for (int y = 0; y < actualHeight; y++)
+				{
+					Cells[x, y] = new Cell(Cell.CellContent.Wall);
+				}
+			}
+			else
+			{
+				Cells[x, 0] = new Cell(Cell.CellContent.Wall);
+				Cells[x, actualHeight-1] = new Cell(Cell.CellContent.Wall);
+				for (int y = 1; y < actualHeight-1; y++)
+				{
+					Cells[x, y] = new Cell(Cell.CellContent.Empty);
+				}
+			}
+		}
+
+	}
+
 }

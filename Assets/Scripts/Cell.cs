@@ -1,27 +1,45 @@
 ﻿public class Cell
 {
-    public enum CellContents
-    {
-        Empty,
-        Wall,
-        Snake,
-        Food
-    }
+	public enum CellContent
+	{
+		Empty,
+		Snake,
+		Wall,
+		Food
+	}
 
-    public CellContents CellContent;
+	public CellContent WhatsHere = CellContent.Empty;
 
-    public Cell(CellContents startContent)
-    {
-        CellContent = startContent;
-    }
+	public Cell(CellContent cellContent)
+	{
+		WhatsHere = cellContent;
+	}
 
-    public CellContents GetContents()
-    {
-        return CellContent;
-    }
+	public CellContent CheckCell()
+	{
+		return WhatsHere;
+	}
 
-    public void ChangeContent(CellContents newContent)
-    {
-        CellContent = newContent;
-    }
+	public void SnakeHere()
+	{
+		WhatsHere = CellContent.Snake;
+	}
+
+	public void SnakeGone()
+	{
+		WhatsHere = CellContent.Empty;
+	}
+
+	public bool AddFood()
+	{
+		if(WhatsHere != CellContent.Empty)
+		{
+			return false;
+		}
+		else
+		{
+			WhatsHere = CellContent.Food;
+			return true;
+		}
+	}
 }
